@@ -1,0 +1,45 @@
+/*
+ * HitList.cpp
+ *
+ *  Created on: 13-Mar-2019
+ *      Author: rsehgal
+ */
+
+#include "HitList.h"
+#include "Ray.h"
+
+namespace RayTracer {
+
+HitList::HitList() {
+	// TODO Auto-generated constructor stub
+
+}
+
+HitList::~HitList() {
+	// TODO Auto-generated destructor stub
+}
+
+bool HitList::FillHitRecordVector(Ray r) {
+	//fVectOfHitRecord.Clear();
+	bool valid = false;
+	std::cout << "PlacedVolumeVector Size : " << fVectOfPlacedVolume.size() << std::endl;
+	for (unsigned int i = 0; i < fVectOfPlacedVolume.size(); i++) {
+		//std::cout << "Radius : " << fVectOfPlacedVolume[i]->GetUnplacedVolume()->GetRadius() << std::endl;
+		std::cout << r.GetRayOrigin() << " : " << r.GetRayDir() << std::endl;
+		double dist = fVectOfPlacedVolume[i]->DistanceToIn(r.GetRayOrigin(),r.GetRayDir());
+		std::cout << "Dist : " <<  dist << std::endl;
+		if (dist > 0. && dist < vecgeom::kInfLength) {
+			std::cout << "Dist : " <<  dist << std::endl;
+			vecgeom::Vector3D<double> pt = r.PointAtDistance(dist);
+			vecgeom::Vector3D<double> norm(0., 0., 0.);
+
+			valid |= fVectOfPlacedVolume[i]->Normal(pt, norm);
+			if (valid) {
+				fVectOfHitRecord.push_back(HitRecord(pt, norm, dist));
+			}
+		}
+	}
+	return valid;
+}
+
+} /* namespace RayTracer */
